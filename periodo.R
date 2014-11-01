@@ -1,0 +1,22 @@
+periodo<-function(x)
+{
+n<-length(x)
+##print(n)
+m<-floor(n/2)
+##print(m)
+t<-1:n
+w<-t[1:m]*2*pi/n
+## e<-rep(1,n)
+c<-cos(t%*%t(w))
+##print(c)
+s<-sin(t%*%t(w))
+mat<-cbind(c,s)
+##print(mat)
+coef<-as.vector((t(x)%*%mat))
+print(length(coef))
+I<-(2*n/pi)*(coef[1:m]^2+coef[(m+1):(2*m)]^2)
+print(length(I))
+w1<-t[1:m]
+print(length(w1))
+plot(w1,I)
+}
