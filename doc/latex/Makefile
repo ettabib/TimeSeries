@@ -1,24 +1,24 @@
 .PHONY: all, update
 
-CC = 
+CC = R CMD Sweave 
 CFLAGS =  
 LDFLAGS = 
 EXEC =  
-SRC=$(wildcard *.tex)
-OBJ = $(SRC:.tex=.pdf) 
+SRC=$(wildcard *.rnw)
+OBJ = $(SRC:.rnw=.tex) 
 
-all: update
+all: update 
 
 debug:
 	@echo "OBJ=$(OBJ)"
 
-update:rapport.tex
+%.tex:%.rnw
+	@cecho -yellow  "***** Reconverting Sweave ----> Latex *****" 
+	@-echo "Sweave ('$<', encoding='latin1')" | R --slave
+update:clean rapport.tex $(OBJ)
 	@-pdflatex -interaction=nonstopmode rapport.tex > /dev/null 2> /dev/null
 	@-cecho -yellow "-------< First compilation done >-------"
 	@echo " "
-	@-pdflatex -interaction=nonstopmode rapport.tex > /dev/null 2> /dev/null
-	@-cecho -yellow "-------< Second compilation done >-------"
-	@-echo " "
 	@-makeindex rapport.idx
 	@cecho -yellow "-------< Index compilation done >-------"
 	@-pdflatex -interaction=nonstopmode rapport.tex > /dev/null 2> /dev/null
@@ -27,15 +27,19 @@ update:rapport.tex
 	@-bibtex biblio.bib > /dev/null 2> /dev/null
 	@-cecho -green "-------< Compiling bibtex done >-------"	
 	@-echo " "
+	@-pdflatex -interaction=nonstopmode rapport.tex > /dev/null 2> /dev/null
+	@-cecho -yellow "-------< Second compilation done >-------"
+	@-echo " "
 	@date | awk '{print $5}'
 
 
 clean:
-	@cecho  "***** Latex Clean *****"
-	@-rm -f rapport.pdf > /dev/null 2> /dev/null
-	@-rm -rf *.bbl *.idx *.blg *.toc *.log *.rel *.fmt *.prv *.aux > /dev/null 2> /dev/null
+	@cecho -yellow  "***** Cleaning Latex's Sweave files *****"
+	@-rm -rf $(OBJ)
 
 view:rapport.pdf
 	@open rapport.pdf
 
 mrproper: clean
+	@-rm -f rapport.pdf > /dev/null 2> /dev/null
+	@-rm -rf *.bbl *.idx *.blg *.toc *.log *.rel *.fmt *.prv *.aux > /dev/null 2> /dev/null

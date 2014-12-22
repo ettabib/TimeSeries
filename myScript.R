@@ -1,10 +1,12 @@
 # Chargement des donees
-France_1 <- read.csv("~/Documents/MyProject/TimeSeries/data/France_1.cvs.csv", sep=";", dec=",",row.names = 1)
+data <- read.csv("~/Documents/MyProject/TimeSeries/data/France_1.cvs.csv", sep=";", dec=",",row.names = 1)
 Spreads <- France_1[1:10]
 
 #allure des spreads
 plot.ts(France_1$X1,xlab="annees",ylab="spreads",las=1)
 
+# POUR LE PERIODIRAMME
+require(TSA)
 #Test de Portemanteau
 require(caschrono)
 set.seed(123)
@@ -20,3 +22,5 @@ a12
 # Test d'independance du Portemanteau pour les spreads
 Box.test(x = France_1$X1, lag = 1)
 # -> distance qui-2 tres grande
+
+prd <- periodogram(y = Spreads$X1[500:600],plot = TRUE)

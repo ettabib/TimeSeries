@@ -1,0 +1,65 @@
+\section{Exploration du Chronogramme}
+\subsection*{Chronogramme}
+Les données sont issue de la société AIG. 
+Aperçu des données :
+
+\begin{Schunk}
+\begin{Sinput}
+> str(data)
+\end{Sinput}
+\begin{Soutput}
+'data.frame':	1338 obs. of  11 variables:
+ $ Dates.Cotations: Factor w/ 1338 levels "2005/08/16","2005/08/17",..: 1 2 3 4 5 6 7 8 9 10 ...
+ $ X1             : num  1.1 1.1 1.1 1.1 1.1 1.1 1 1.1 1 0.8 ...
+ $ X2             : num  0.8 0.8 0.8 0.8 0.8 0.8 0.7 0.8 0.7 0.8 ...
+ $ X3             : num  1.4 1.4 1.4 1.4 1.4 1.4 1.3 1.4 1.2 1.4 ...
+ $ X4             : num  3.9 3.9 3.9 3.9 3.9 3.9 3.5 3.9 3.4 3 ...
+ $ X5             : num  2.2 2.2 2.2 2.2 2.2 2.2 2 2.2 1.9 2 ...
+ $ X6             : num  1.6 2.1 2.5 2.1 2.1 2.1 1.9 1.7 1.4 1.5 ...
+ $ X7             : num  1.7 2.8 2.8 2.8 2.8 2.8 2.6 1.8 1.5 1.7 ...
+ $ X8             : num  2.2 3.3 3.2 3.4 3.4 3.4 3.2 2.3 2 2.1 ...
+ $ X9             : num  3 3.6 3.6 3.8 3.8 3.8 3.6 3 2.7 2.8 ...
+ $ X10            : num  3.9 3.8 4 4 4 4 3.8 4 3.7 3.8 ...
+\end{Soutput}
+\end{Schunk}
+
+\subsection{Lag plot}
+Un lag plot ou diagramme retardé est le diagramme de dispersion 
+des points ayant pour abscisse la série retardée de k instants 
+et pour ordonnée la série non retardée.\\ 
+Si le diagramme retardé suggère une corrélation entre les deux séries, 
+on dit que la série présente une autocorrélation d’ordre k.
+
+Les $X_i$ representes les spreads de maturite "i" annees.
+\begin{figure}[H] 
+	\begin{center} 
+		\includegraphics[height=4in, width=4in,angle=270]{lagplot} 
+	\end{center} 
+	\caption{\it le lag plot des donnees de $X_{t-1}$ jusqu'a $X_{t-56}$} 
+	\label{fig:lagplot} 
+\end{figure}
+
+On constate graphiquement que la fonction d'autocorrélation du processus est decroissante. On peut donc affirmer
+que le processus est faiblement stationnaire.
+
+Si on pousse le lagplot un peu plus loin dans la depandance :
+\begin{figure}[H] 
+	\begin{center} 
+		\includegraphics[width=4in,height=4in,angle=270]{lagplot2}
+	\end{center} 
+	\caption{\it lag plot des donnees $X_{t-1}$ jusqu'a $X_{t-499}$} 
+	\label{fig:lagplot2}
+\end{figure}
+
+on constate donc que la fonction fonction d'autocorrélation s'annule presque quand h augmente
+. Cela nous favorise l'hypothèse que le processus est k-depandant. \\
+le phénomène de periodicite est peu favorisé ici car sinon on aura pas une décroissance parfaite de 
+la fonction d'autocorrélation.
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=4in,height=4in,angle=270]{}
+	\end{center}
+	\caption{}
+	\label{fig:}
+\end{figure}
