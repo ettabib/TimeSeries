@@ -1,26 +1,37 @@
+require(forecast)
 # Chargement des donees
-data <- read.csv("~/Documents/MyProject/TimeSeries/data/France_1.cvs.csv", sep=";", dec=",",row.names = 1)
-Spreads <- France_1[1:10]
+data <- read.csv("~/Documents/MyProject/TimeSeries/data/France_1.csv", sep=";", dec=",",row.names = 1)
+
+# on charge depuis la date 28/09/2007
+#data <- data[554:1338,]
+log.data <- log(data)
 
 #allure des spreads
-plot.ts(France_1$X1,xlab="annees",ylab="spreads",las=1)
+plot.ts(data$X1,xlab="annees",ylab="spreads",las=1)
+plot.ts(log.data$X1,xlab="annees",ylab="spreads",las=1)
+plot.ts(sqrt(data$X1),xlab="annees",ylab="spreads",las=1)
+ 
+# Etude de la stationnarite -----------------------------------------------
+
+install.packages('CADFtest')
+# Test d'independance du Portemanteau pour les spreads
+Box.test(x = data$X1, lag = 1)
+
+# test de Dickey Fuller
+require(tseries)
+require(urca)
+adf.test(x = data$X1,alternative = "s")
+test2 <- ur.df(y = data$X1,type = "none")
+summary(test2)
+test3 <- ur.df(y = data$X1,type = "drift")
+summary(test3)
 
 # POUR LE PERIODIRAMME
 require(TSA)
-#Test de Portemanteau
-require(caschrono)
-set.seed(123)
-y1=arima.sim(n=100,list(ar=-.7),sd=sqrt(4))
-y2=arima.sim(n=100,list(ar=c(rep(0,11),-.7)),sd=sqrtt(4))
-ret=c(3,6,9,12)
-a1=Box.test.2(y1,nlag=ret,type="Ljung-Box",decim=2)
-a2=Box.test.2(y2,nlag=ret,type="Ljung-Box",decim=2)
-a12=cbind(a1,a2[,2])
-colnames(a12)=c("Retard","p-val. y1","p-val.y2")
-a12
 
-# Test d'independance du Portemanteau pour les spreads
-Box.test(x = France_1$X1, lag = 1)
-# -> distance qui-2 tres grande
+prd <- periodogram(y = log.data$X1[500:600],plot = TRUE)
 
-prd <- periodogram(y = Spreads$X1[500:600],plot = TRUE)
+
+# Independance ------------------------------------------------------------
+
+

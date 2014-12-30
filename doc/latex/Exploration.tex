@@ -1,10 +1,11 @@
-\section{Exploration du Chronogramme}
-\subsection*{Chronogramme}
-Les données sont issue de la société AIG. 
+\section{Exploration du Chronogramme} 
+\subsection*{Chronogramme} 
+Les données sont issue de la société AIG.  
 Aperçu des données :
 
-\begin{Schunk}
-\begin{Sinput}
+
+\begin{Schunk} 
+\begin{Sinput} 
 > str(data)
 \end{Sinput}
 \begin{Soutput}
@@ -23,14 +24,30 @@ Aperçu des données :
 \end{Soutput}
 \end{Schunk}
 
-\subsection{Lag plot}
-Un lag plot ou diagramme retardé est le diagramme de dispersion 
-des points ayant pour abscisse la série retardée de k instants 
-et pour ordonnée la série non retardée.\\ 
-Si le diagramme retardé suggère une corrélation entre les deux séries, 
-on dit que la série présente une autocorrélation d’ordre k.
+\begin{figure}[H]
+    \centering
+    \label{fig:chrono} 
+    \includegraphics[width=2in,heigth=2in,angle=270]{chrono} 
+    \caption{\it Le chronogramme des spreads de maturité 1 ans } 
+ \end{figure} 
+        
+ On constate rapidement une croissance multiplicative du processus, ce qui nous impose alors une transformation 
+ logarithmique
+    \begin{figure}[H]
+    \centering
+        \label{fig:logchrono} 
+         \includegraphics[width=2in,heigth=2in,angle=270]{logchrono} 
+         \caption{\it transformation logarithmique des données} 
+     \end{figure} 
 
-Les $X_i$ representes les spreads de maturite "i" annees.
+\subsection{Lag plot}
+Un lag plot ou diagramme retardé est le diagramme de dispersion 
+des points ayant pour abscisse la série retardée de k instants 
+et pour ordonnèe la série non retardée.\\ 
+Si le diagramme retardé suggère une corrélation entre les deux séries, 
+on dit que la série présente une autocorrélation d’ordre k.
+
+Les $X_i$ représentes les spreads de maturité "i" années.
 \begin{figure}[H] 
 	\begin{center} 
 		\includegraphics[height=4in, width=4in,angle=270]{lagplot} 
@@ -39,27 +56,31 @@ Les $X_i$ representes les spreads de maturite "i" annees.
 	\label{fig:lagplot} 
 \end{figure}
 
-On constate graphiquement que la fonction d'autocorrélation du processus est decroissante. On peut donc affirmer
+On constate graphiquement que la fonction d'autocorrélation du processus est décroissante. On peut donc affirmer
 que le processus est faiblement stationnaire.
 
-Si on pousse le lagplot un peu plus loin dans la depandance :
+Si on pousse le lagplot un peu plus loin dans la dépendance :
 \begin{figure}[H] 
 	\begin{center} 
 		\includegraphics[width=4in,height=4in,angle=270]{lagplot2}
 	\end{center} 
-	\caption{\it lag plot des donnees $X_{t-1}$ jusqu'a $X_{t-499}$} 
+	\caption{\it lag plot des données $X_{t-1}$ jusqu'à $X_{t-499}$} 
 	\label{fig:lagplot2}
 \end{figure}
 
-on constate donc que la fonction fonction d'autocorrélation s'annule presque quand h augmente
+On constate donc que la fonction fonction d'autocorrélation s'annule presque quand h augmente
 . Cela nous favorise l'hypothèse que le processus est k-depandant. \\
-le phénomène de periodicite est peu favorisé ici car sinon on aura pas une décroissance parfaite de 
+le phénomène de périodicité est peu favorisé ici car sinon on aura pas une décroissance parfaite de 
 la fonction d'autocorrélation.
 
+\subsection{Tendance}
+le processus semble ne pas avoir de saisonnalité particulière.
+Le processus ne peut pas être AR ou MA car sa fonction d' autocorrélation ne s'annule pas :
 \begin{figure}[H]
 	\begin{center}
-		\includegraphics[width=4in,height=4in,angle=270]{}
+		\includegraphics[width=4in,height=4in,angle=270]{ac} 
 	\end{center}
 	\caption{}
-	\label{fig:}
+	\label{fig:cor}
 \end{figure}
+
