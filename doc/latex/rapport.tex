@@ -1,12 +1,28 @@
 \documentclass{Math}
 \usepackage{Sweave}
+\lstloadlanguages{R}
+\lstset{language=R}
+
 
 \begin{document}
+\frontmatter
+\title{Rapport}
+\author{Ettabib Mohammed}
+\maketitle
+\mainmatter
+
 \DefineVerbatimEnvironment{Sinput}{Verbatim}{formatcom={\color[rgb]{0, 0, 0.56}}}
 \DefineVerbatimEnvironment{Soutput}{Verbatim}{formatcom              =
   {\color[rgb]{0.56, 0, 0}}}
-
-  \include{Tendance}
+    \french
+  \begin{abstract}
+      Les données utilisées dans cette études sont des spreads de contrats CDS
+      de la société \url{www.aigassurance.fr}. \\
+      Le but de cette etude est construire une modelisation sur la base de la
+      theorie des series temporelles.\\
+  \end{abstract}
 \include{Exploration}
-
+\include{Tendance}
+\backmatter
+\tableofcontents
 \end{document}

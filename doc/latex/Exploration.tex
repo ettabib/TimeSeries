@@ -1,86 +1,385 @@
-\section{Exploration du Chronogramme} 
-\subsection*{Chronogramme} 
-Les données sont issue de la société AIG.  
-Aperçu des données :
+\section{Exploration des données} 
+    \subsection{Données}
+    \subparagraph{} Les données fournies sont des cotations de spreads de CDS pour les maturités
+    allant de 1ans à 10ans, entre 16/08/2005 et
+    30/09/2010. 
+    Cette periode a ete marque par le debut de la crise financiere en 2008, et en
+    particulier par la faillite de la filiale newyorkaise de la societe AIG le 16
+    septembre 2008. 
+    \subparagraph{}
+    Le marche des CDS est consideree comme une des riaisons principales de la chute
+    du groupe Americain AIG.En effet, Le march des CDS est passe de 6 396 milliards de dollars
+    amricains à fin 2004 à 57 894 milliards à fin 2007, prenant le caractère d'une
+    bulle financière.
 
 
-\begin{Schunk} 
-\begin{Sinput} 
-> str(data)
-\end{Sinput}
-\begin{Soutput}
-'data.frame':	1338 obs. of  11 variables:
- $ Dates.Cotations: Factor w/ 1338 levels "2005/08/16","2005/08/17",..: 1 2 3 4 5 6 7 8 9 10 ...
- $ X1             : num  1.1 1.1 1.1 1.1 1.1 1.1 1 1.1 1 0.8 ...
- $ X2             : num  0.8 0.8 0.8 0.8 0.8 0.8 0.7 0.8 0.7 0.8 ...
- $ X3             : num  1.4 1.4 1.4 1.4 1.4 1.4 1.3 1.4 1.2 1.4 ...
- $ X4             : num  3.9 3.9 3.9 3.9 3.9 3.9 3.5 3.9 3.4 3 ...
- $ X5             : num  2.2 2.2 2.2 2.2 2.2 2.2 2 2.2 1.9 2 ...
- $ X6             : num  1.6 2.1 2.5 2.1 2.1 2.1 1.9 1.7 1.4 1.5 ...
- $ X7             : num  1.7 2.8 2.8 2.8 2.8 2.8 2.6 1.8 1.5 1.7 ...
- $ X8             : num  2.2 3.3 3.2 3.4 3.4 3.4 3.2 2.3 2 2.1 ...
- $ X9             : num  3 3.6 3.6 3.8 3.8 3.8 3.6 3 2.7 2.8 ...
- $ X10            : num  3.9 3.8 4 4 4 4 3.8 4 3.7 3.8 ...
-\end{Soutput}
-\end{Schunk}
+    j'ai choisi ici de faire mon étude pour les spreads de 1ans car l'évolution des
+    spreads est presque identiques pour les différentes maturités.
 
-\begin{figure}[H]
-    \centering
-    \label{fig:chrono} 
-    \includegraphics[width=2in,heigth=2in,angle=270]{chrono} 
-    \caption{\it Le chronogramme des spreads de maturité 1 ans } 
- \end{figure} 
-        
- On constate rapidement une croissance multiplicative du processus, ce qui nous impose alors une transformation 
- logarithmique
+    \begin{verbatim}
+    > colnames(data)
+    [1] "cot" "S1"  "S2"  "S3"  "S4"  "S5"  "S6"  "S7"  "S8"
+    "S9"  "S10"
+    > head(data$cot)
+    [1] "2005-08-16" "2005-08-17" "2005-08-18" "2005-08-19" "2005-08-22"
+    "2005-08-23"
+    > head(data$S1)
+    [1] 1.1 1.1 1.1 1.1 1.1 1.1
+    \end{verbatim}
+
+    \subsection{Chronogramme} 
+    Notre première étape est donc de voir l'allure de la courbe :
     \begin{figure}[H]
-    \centering
-        \label{fig:logchrono} 
-         \includegraphics[width=2in,heigth=2in,angle=270]{logchrono} 
-         \caption{\it transformation logarithmique des données} 
-     \end{figure} 
+        \centering
+        \label{fig:chrono} 
+        \includegraphics[width=4in,heigth=4in,angle=270]{chrono} 
+        \caption{\it Le chronogramme des spreads de maturité 1 ans } 
+    \end{figure}
 
-\subsection{Lag plot}
-Un lag plot ou diagramme retardé est le diagramme de dispersion 
-des points ayant pour abscisse la série retardée de k instants 
-et pour ordonnèe la série non retardée.\\ 
-Si le diagramme retardé suggère une corrélation entre les deux séries, 
-on dit que la série présente une autocorrélation d’ordre k.
+    On remarque bien que la variance de la courbe augmente avec le temps. Cela
+    montre de premier abord que le processus n'est pas stationnaire, autrement
+    on aurait eu une variation stable au long du processus.
 
-Les $X_i$ représentes les spreads de maturité "i" années.
-\begin{figure}[H] 
-	\begin{center} 
-		\includegraphics[height=4in, width=4in,angle=270]{lagplot} 
-	\end{center} 
-	\caption{\it le lag plot des donnees de $X_{t-1}$ jusqu'a $X_{t-56}$} 
-	\label{fig:lagplot} 
-\end{figure}
+    On constate aussi une croissance importante du processus, et cela favorise bien
+    l'existence d'une tendance croissante.
 
-On constate graphiquement que la fonction d'autocorrélation du processus est décroissante. On peut donc affirmer
-que le processus est faiblement stationnaire.
+    L'existence d'une saisonnalité est moins évidente  à détecter. 
 
-Si on pousse le lagplot un peu plus loin dans la dépendance :
-\begin{figure}[H] 
-	\begin{center} 
-		\includegraphics[width=4in,height=4in,angle=270]{lagplot2}
-	\end{center} 
-	\caption{\it lag plot des données $X_{t-1}$ jusqu'à $X_{t-499}$} 
-	\label{fig:lagplot2}
-\end{figure}
+    \subsection{Stabilisation la variance}
+    L'augmentation de la variance au fil du temps peu être diminue grâce a
+    certaines transformation. Nous allons choisir celle  de Box-Cox définie par :
+    \[
+        f_\lambda(X_t)=
+        \begin{cases}
+            \lambda^{-1}(X_t^\lambda - 1), & X_t \geq 0,\lambda \ge 0, \\
+            \ln X_t,                       & X_t \ge  0,\lambda  =   0,
+        \end{cases}
+    \]
+    pour cela comparons les transformations pour les valeurs de
+    $\lambda=0,0.5,1.5$
+    \begin{figure}[H]
+        \centering 
+        \label{fig:Boxcox} 
+        \includegraphics[width=4in,heigth=4in,angle=270]{boxcox} 
+        \caption{\it Trace des spreads de 1 ans en appliquant les
+        transformation de Box-Cox pour 3 valeurs de $\lambda$ } 
+    \end{figure} 
+    On remarque que la transformation logarithmique est bien adaptée  aux
+    données car elle diminue l'effet de la croissance de la variance.\\
+    Ainsi dans la suite on choisira de travailler sur cette transformation
+    $\ln(X_t)$
 
-On constate donc que la fonction fonction d'autocorrélation s'annule presque quand h augmente
-. Cela nous favorise l'hypothèse que le processus est k-depandant. \\
-le phénomène de périodicité est peu favorisé ici car sinon on aura pas une décroissance parfaite de 
-la fonction d'autocorrélation.
 
-\subsection{Tendance}
-le processus semble ne pas avoir de saisonnalité particulière.
-Le processus ne peut pas être AR ou MA car sa fonction d' autocorrélation ne s'annule pas :
-\begin{figure}[H]
-	\begin{center}
-		\includegraphics[width=4in,height=4in,angle=270]{ac} 
-	\end{center}
-	\caption{}
-	\label{fig:cor}
-\end{figure}
+\begin{verbatim}
+S1 <- log(data$S1)
+\end{verbatim}
 
+    \subsection{Lag plot}
+    Un lag plot ou diagramme retardé est le diagramme de dispersion 
+    des points ayant pour abscisse la série retardée de k instants 
+    et pour ordonnée la série non retardée.\\ 
+    Si le diagramme retardé suggère une corrélation entre les deux séries, 
+    on dit que la série présente une auto-corrélation d’ordre k.
+
+    Les $X_i$ représentes les spreads de maturité "i" années.
+    \begin{figure}[H] 
+        \begin{center} 
+            \includegraphics[height=4in, width=4in,angle=270]{lagplot} 
+        \end{center} 
+        \caption{\it le lag plot des données de $X_{t-1}$ jusqu'à $X_{t-56}$} 
+        \label{fig:lagplot} 
+    \end{figure}
+
+    On constate graphiquement que la fonction d'auto-corrélation du processus est décroissante. On peut donc affirmer
+    que le processus est faiblement stationnaire.
+
+    On constate donc que la fonction fonction d'auto-corrélation s'annule presque quand h augmente
+    . Cela nous favorise l'hypothèse que le processus est k-depandant. \\
+    le phénomène de périodicité est peu favorisé ici car sinon on aura pas une décroissance parfaite de 
+    la fonction d'auto-corrélation.
+
+    le processus semble ne pas avoir de saisonnalité particulière.
+    Le processus ne peut pas être AR ou MA car sa fonction d' auto-corrélation ne s'annule pas :
+    \begin{figure}[H]
+        \begin{center}
+            \includegraphics[width=4in,height=4in,angle=0]{ac} 
+        \end{center}
+        \caption{}
+        \label{fig:cor}
+    \end{figure}
+
+    \subsection{Étude de la saisonnalité et de la tendance}
+
+    Dans ce paragraphe nous allons voire si on peut détecter une saisonnalité.
+    Commençons alors par tracer le périodogramme :
+    \begin{figure}[H]
+        \centering 
+        \label{fig:period} 
+        \includegraphics[width=2in,heigth=2in,angle=270]{period} 
+        \caption{\it périodogramme de la période 16/07/2007 - 03/12/2007 } 
+    \end{figure} 
+
+    Le périodogramme ne nous informe pas sur une probable saisonnalité.
+    \subsubsection{Agregation annuelle}
+    Afin de voire le comportement annuelle de notre serie nous allons agreger
+    les spreads. 
+    \begin{figure}[H]
+        \centering 
+        \label{fig:annual} 
+        \includegraphics[width=4in,heigth=4in,angle=270]{Annual} 
+        \caption{\it Agregation annuelle des spreads par moyenne empirique } 
+    \end{figure} 
+
+    On constate parfaitement ici le changement brusque du niveau des spreads
+    apres la crise en 2008.
+    \subsubsection{Agregation mensuelle}
+    Pour voir le comportement des spreads mensuelle on va les agreger par
+    moyenne empirique  
+
+    \begin{figure}[H]
+        \centering 
+        \label{fig:meanMens} 
+        \includegraphics[width=4in,heigth=4in,angle=270]{meanMens} 
+        \caption{\it Moyenne par mois sur toutes les années pour les spreads
+        de 1 ans } 
+    \end{figure} 
+
+    Le graphique des boxplots montre une certaine homogenite de distribution sur
+     les mois, donc on en conclut que les données non pas une saisonnalité
+     mensuelle particulière.
+    \subsubsection{Superposition des spreads annuels} 
+    Nous allons agreger les spreads par années en utilisant la moyenne
+    empirique.
+    \begin{figure}[H]
+        \centering 
+        \label{fig:polarAn} 
+        \includegraphics[width=4in,heigth=4in,angle=270]{polarAn} 
+        \caption{\it Representation polaire de les spreads } 
+    \end{figure} 
+
+
+    On constate bien que les points s'éloignent du centre d'année en
+    année, ce qui traduit la tendance croissante du processus. En outre
+    il n'y a pas de symétrie entre l'allure des spreads par année ce qui
+    rend la présence d'une saisonnalité encore moins évident.
+
+    Cette dernière observation nous dirige vers le sens d'aprouver une
+    absence de saisonnalité.  
+
+    La fonction \verb+decompose()+  en R permet de decomposer le processus en
+    tendance et saisonnalite, alors que \verb+nsdiffs+ calcul le nombre de
+    differenciation necessaires pour desaisonaliser le processus :
+    \begin{verbatim}
+    > decompose(S1)
+    Erreur dans decompose(S1) : la srie temporelle a moins de 2 priodes
+    \end{verbatim}
+
+    \begin{verbatim}
+    > nsdiffs(S1)
+    Erreur dans nsdiffs(S1) : Non seasonal data
+    \end{verbatim}
+
+
+    \subparagraph{Conclusion}
+    Sur ses resultats nous concluons que le processus ne presente aucune
+    saisonnalité mais une tendance croissante.
+\section{Modelisation du processus}
+    \subsection{Etude des proprietes du processus}    
+    \paragraph{Independance} 
+
+    le processus est loi d'etre un processus indepandant, car certainement la
+    societe n'est pas indifferente aux spreads qu'elle a emis dans le passe.
+    Pour tester l'independance on choisit par exemple le test de Portemanteau
+    qui est fourni par R sous \verb+Box.test()+ avec $H_0$=``le processus est
+    independant''. Le test calcul
+    la distance $\xi^2$ de l'auto-covariance des premiers retards. Si la p-value est tres petite ce la
+    veut dire que cette auto-covariance n'est pas nulle et donc le processus :
+    \begin{verbatim}
+    > Box.test (S1)
+
+        Box-Pierce test
+
+    data:  S1
+    X-squared = 1327.591, df = 1, p-value < 2.2e-16
+
+    > Box.test (S1,  type = ``Ljung'')
+
+        Box-Ljung test
+
+    data:  S1
+    X-squared = 1330.57, df = 1, p-value < 2.2e-16
+
+    \end{verbatim}
+
+    Le test retourne une p-value presque nulle donc on rejette hypothèse nulle.
+    Ainsi le processus n'est pas indepandant.
+
+    \paragraph{Stationnarite}
+    Un processus stationnaire est un processus dont :
+    \begin{itemize}
+        \item $\forall t,E[X_t]=\mu$  
+        \item $cov(X_{t+h},X_t)=\gamma(h)$ 
+    \end{itemize}
+    Ceci implique que le processus a une variance constante .
+    Notre processus donc ne peut etre stationnaire du fait de la crise
+    financière qui a eu un grand impact sur les CDS. 
+    Pour tester la stationnarite de notre processus nous utiliserons les tests
+    de la racine unite. 
+    La fonction \verb+adf.test()+ permet de faire le test de Dickey Fuller
+    où l'hypothèse nulle est la non stationnarite du processus.  
+    \begin{verbatim}
+    > adf.test(x = S1,alternative = ``s'')
+
+        Augmented Dickey-Fuller Test
+
+        data:  S1
+        Dickey-Fuller = -3.0033, Lag order = 11, p-value = 0.1536
+        alternative hypothesis: stationary
+    \end{verbatim}
+
+    Le test a donc une p-value non negligeable donc on ne peut pas rejeter
+    l'hypothese nulle de non stationnarite 
+
+
+
+
+
+
+    \subsection{Modelisation}
+    Nous allons commencer par une differenciation . Notons $Y_t=\Delta X_t$
+    tracons l'allure de cette difference :
+
+    \begin{figure}[H]
+        \centering 
+        \label{fig:chronoD1} 
+        \includegraphics[width=3in,heigth=3in,angle=270]{chronoD1} 
+        \caption{\it Allure de la difference du proceccus $X_t$ } 
+    \end{figure} 
+
+    On remarque de visu que le processus est centre. Cela peut etre confirme par
+    le test de Student :
+    \begin{verbatim}
+    > t.test(x = D1,mu = 0)
+
+        One Sample t-test
+
+        data:  D1
+        t = 0.5449, df = 1336, p-value = 0.5859
+        alternative hypothesis: true mean is not equal to 0
+        95 percent confidence interval:
+         -0.007258727  0.012841413
+         sample estimates:
+           mean of x 
+           0.002791343 
+    \end{verbatim}
+    Le resultat du test est satisfaisant a cette egard puisque il faut accepter
+    une erreur de 59\% pour pouvoir rejeter l'hypothèse nulle : le processus est
+    centre.\\
+    \paragraph{Test d'independance}
+
+    \begin{verbatim}
+    > Box.test(x = D1)
+
+    Box-Pierce test
+
+    data:  D1
+    X-squared = 11.272, df = 1, p-value = 0.0007869
+
+    > Box.test(x = D1,type = ``L'')
+
+    Box-Ljung test
+
+    data:  D1
+    X-squared = 11.2973, df = 1, p-value = 0.0007762
+
+    \end{verbatim}
+
+    Le test renvoie alors une dependance du processus.
+    \paragraph{Stationnarite}
+
+    En appliquant le test de Dickey-Fuller :
+    \begin{verbatim}
+    > adf.test(x = D1,alternative = ``s'') # -> processus stationnaire
+
+        Augmented Dickey-Fuller Test
+
+        data:  D1
+        Dickey-Fuller = -11.0561, Lag order = 11, p-value = 0.01
+        alternative hypothesis: stationary
+
+        Message d'avis :
+        In adf.test(x = D1, alternative = ``s'') :
+          p-value smaller than printed p-value
+    \end{verbatim}
+    On constate que le processus $Y_t$ est stationnaire.
+    
+    a present on peut envisager une modelisation ARMA pour le procussus
+    $Y_t$.
+
+    Examinons d'abord l'allure de l'auto-correlation de ce processus:
+    \begin{figure}[H]
+        \centering 
+        \label{fig:D1ac} 
+        \includegraphics[width=2in,heigth=2in,angle=270]{D1ac} 
+        \caption{\it auto-correlation totale et partielle de $Y_t$ } 
+    \end{figure} 
+
+    on constate tout d'abord que l'ACF et la PACF s'annulent à partir du 3eme
+    retard. Donc cela nous suggère immediatement trois modeles ARMA qui peuvent
+    etre candidats : ARMA(0,2), ARMA(2,0) et ARMA(2,guvent etre candidats :
+    ARMA(0,2), ARMA(2,0) et ARMA(2,2). 
+    Comparons alors ces trois modeles en utilisant le critere AIC :
+
+    \begin{verbatim}
+    > arima(x = S1,c(0,1,2))
+    Series: x 
+    ARIMA(0,1,2)                    
+
+    Coefficients:
+    ma1      ma2
+    -0.1269  -0.0800
+    s.e.   0.0280   0.0268
+
+    sigma^2 estimated as 0.03451:  log likelihood=353.44
+    AIC=-702.88   AICc=-702.86   BIC=-687.29
+    > arima(S1,c(2,1,2))
+    Series: x 
+    ARIMA(2,1,2)                    
+
+    Coefficients:
+    ar1     ar2     ma1      ma2
+    -0.1978  0.5434  0.0524  -0.6079
+    s.e.   0.1165  0.0800  0.1129   0.0791
+
+    sigma^2 estimated as 0.03404:  log
+    likelihood=362.43
+    AIC=-716.86   AICc=-716.81   BIC=-690.87
+    > arima(S1,c(2,1,0))
+    Series: x 
+    ARIMA(2,1,0)                    
+
+    Coefficients:
+    ar1      ar2
+    -0.0963  -0.0526
+    s.e.   0.0273   0.0273
+
+    sigma^2 estimated as
+    0.03468:  log
+    likelihood=350.08
+    AIC=-696.15   AICc=-696.13
+    BIC=-680.56
+    \end{verbatim}
+
+    Il est clair que le Modele ARMA(2,2) est meilleur que AR(2) et MA(2)non
+    seulement par le
+    critere AIC mais aussi parce qu'il a la plus petite variance.
+
+
+
+    
+   
+
+    
+
+
+    
