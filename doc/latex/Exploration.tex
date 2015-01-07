@@ -470,8 +470,8 @@
             P_t(X_{t+h}) &=& (-a_1)^{h} Y_t + P_{t+h-1}(X_{t+h-1}) 
         \]
 
-        \paragraph{Prediction pas a pas} On va predire le processus pas : a un t
-        donne on predit t+1 a partir des vrais donnee du processus :
+        \paragraph{Prediction pas a pas} A un t
+        donne on predit t+1 a partir de la vrais valeurs $X_t$ du processus:
         \begin{figure}[H]
             \centering 
             \label{fig:pred0} 
@@ -495,8 +495,152 @@
         est dû au fait que les coefficient $(-a_1)^{h}$ ne sont plus
         significatifs au bout de 3 iterations $(h\ge3)$.
         \paragraph{Resume} Le Modele ARIMA(1,1,0) est un modele adapté a nos
-        données, mais avec un bruit non gaussien. Ceci rends l'estimation des
-        parametres du modele moins forte, et donc une prediction limitee.       
+         données, mais avec un bruit non gaussien.
+        % Ceci rends l'estimation des
+        % parametres du modele moins forte, et donc une prediction limitee.       
+
+
+
+\section{Etude du cours d'action de la societe AIG}
+    \subsection{Exploration des donnees}
+        \begin{verbatim}
+        > describe(aig)
+        aig 
+
+        2  Variables      758  Observations
+        --------------------------------------------------------------------------------------------------
+        cot 
+        n missing  unique 
+        758       0     758 
+
+        lowest : 2007-09-28 2007-10-01 2007-10-02 2007-10-03 2007-10-04
+        highest: 2010-09-24 2010-09-27 2010-09-28 2010-09-29 2010-09-30 
+        --------------------------------------------------------------------------------------------------
+        cours 
+        n missing  unique    Info    Mean     .05     .10     .25
+        .50     .75     .90     .95 
+        758       0     632       1   28.52   1.134   1.460
+        3.375  33.865  40.900  54.858  58.304 
+
+        lowest :  0.35  0.41  0.42  0.43  0.46, highest: 68.92
+        68.95 69.37 69.39 70.11 
+        --------------------------------------------------------------------------------------------------
+        \end{verbatim}
+        \begin{figure}[H]
+            \centering 
+            \label{fig:Aigchrono} 
+            \includegraphics[width=3in,heigth=3in,angle=270]{Aigchrono} 
+            \caption{\it Trace du chronogramme du cours d'action d'Aig entre
+            2007-09-28 et 2010-09-30} 
+        \end{figure} 
+
+    \subsection{Stabilisation de la variance}                
+
+        Comme dans la section precedente on va transformer nos données
+        logarithmiquement afin d'avoir une variabilite un peu plus
+        stable :
+        \begin{figure}[H]
+            \centering 
+            \label{fig:Aiglog} 
+            \includegraphics[width=3in,heigth=3in,angle=270]{Aiglog} 
+            \caption{\it Transformation logarithmique du cours
+            d'action de AIG } 
+        \end{figure} 
+
+        \subsection{Modelisation}
+            \subsubsection{Ordre de differenciation}
+            \paragraph{Remarque} Le premier ordre de differenciation corresponds au rendement de
+                l'action AIG. En effet :
+                \[
+                    \Delta \log X_t ~ \frac{X_t - X_{t-1}}{X_t}
+                \]
+            \paragraph{Stationnarite du rendement}
+                \begin{figure}[H]
+                    \centering 
+                    \label{fig:Aigdep} 
+                    \includegraphics[width=3in,heigth=3in,angle=270]{Aigdep} 
+                    \caption{\it Correlogramme du processus
+                    differencie ou du rendement  } 
+                \end{figure} 
+
+                On constate que le rendement est centre, avec presque aucune
+                autocorrelation non nulle. L'allure de la courbe du rendement ne
+                reflete pas la stationnarite, car sa variance n'est pas
+                constante. Le test KPSS de racine unite accepte la stationnarite
+                sous un seuil de 1\% et la rejette au-dela de cette
+                valeur :
+                \begin{verbatim}
+                > summary(ur.kpss(y = l.aig$R))
+
+                ####################### 
+                # KPSS Unit Root Test # 
+                ####################### 
+
+                Test is of type: mu with 6 lags. 
+
+                Value of test-statistic is: 0.5453 
+
+                Critical value for a significance level of: 
+                                10pct  5pct 2.5pct  1pct
+                critical values 0.347 0.463  0.574 0.739
+
+                \end{verbatim}
+                Ainsi on ne peut pas trancher sur la stationnarite du rendement.
+                J'ai essaye alors de pousser la differentiation a un ordre plus
+                superieur mais le resultat pour la stationnarite reste le même.
+                Donc on retient le premier ordre de differenciation. 
+
+    \subsection{Modelisation ARMA ?}       
+        \paragraph{} Comme le graphe ne reflete pas une variance
+        constante pour le rendement on ne peut pas directement en
+        visager une modelisation ARMA. En effet, si on avait à modeliser
+        le rendement comme un ARMA la representation la plus appropriee
+        sera ARMA(0,0). puisque les coefficient
+        d'autocorrelation sont presque tous null:
+        \begin{verbatim}
+        > auto.arima(l.aig$cours)
+        Series: l.aig$cours 
+        ARIMA(0,1,0)                    
+
+        sigma^2 estimated as 0.01746:  log likelihood=457.89
+        AIC=-913.78   AICc=-913.77   BIC=-909.15
+        \end{verbatim}
+
+                % Cette modelisation implique que le redement est lui même son
+                % residu. Or le test d'independance de ce residu montre un
+                % depandance :
+                % \begin{verbatim}
+                % > Box.test(auto.arima(l.aig$cours)$residuals)
+
+                %     Box-Pierce test
+
+                %     data:  auto.arima(l.aig$cours)$residuals
+                %     X-squared = 1.5128, df = 1, p-value = 0.2187
+                % \end{verbatim}
+
+                % \subparagraph{Conclusion} On ne peut pas modeliser le rendement
+                % par une modelisation ARMA.
+
+
+    \subsection{Heteroscedasticite conditionnelle}
+        \paragraph{}L'evolution de la courbe de rendement connait des variations elevees 
+        et faibles. Ceci peut etre du a une variance conditionnelle non
+        constante, ou en d'autre terme une presence d'heterocedasticite
+        conditionnelle. la fonction \verb+ArchTest()+ permet de tester cela
+        :
+        \begin{verbatim}
+        > ArchTest(x = r.aig,lags = 30,demean = TRUE)
+
+        ARCH LM-test; Null hypothesis: no ARCH effects
+
+        data:  r.aig
+        Chi-squared = 42.8188, df = 30, p-value = 0.06078
+        \end{verbatim}
+        Ainsi pour un seuil de 5\% le test revele la presence d'une
+        heterocedasticite conditionnelle.
+
+
+
 
 
 
