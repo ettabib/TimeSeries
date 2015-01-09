@@ -24,7 +24,7 @@
                705 2008-04-28 1.648659 5.8 6.1 6.7  7.3  8.0  8.7  9.4 10.1 10.8
     \end{verbatim}
 
-    \subsubsection{Chronogramme} 
+    \subsection{Chronogramme} 
     Notre première étape est donc de voir l'allure de la courbe :
     \begin{figure}[H]
         \centering
@@ -171,22 +171,22 @@
         \end{verbatim}
 
         Le test retourne une p-value presque nulle donc on rejette hypothèse nulle.
-        Ainsi le processus n'est pas indepandant.
+        Ainsi le processus n'est pas indépendant.
 
-        \paragraph{Stationnarite}
+        \paragraph{Stationnarité}
         Un processus stationnaire est un processus dont :
         \begin{itemize}
             \item $\forall t,E[X_t]=\mu$  
             \item $cov(X_{t+h},X_t)=\gamma(h)$ 
         \end{itemize}
         Ceci implique que le processus a une variance constante .
-        Notre processus donc ne peut etre stationnaire du fait de la crise
+        Notre processus donc ne peut être stationnaire du fait de la crise
         financière qui a eu un grand impact sur les CDS. 
 
-        \paragraph{} Pour tester la stationnarite de notre processus nous utiliserons les tests
-        de la racine unite. 
+        \paragraph{} Pour tester la stationnarité de notre processus nous utiliserons les tests
+        de la racine unité. 
         La fonction \verb+adf.test()+ permet de faire le test de Dickey Fuller
-        où l'hypothèse nulle est la non stationnarite du processus.  
+        où l'hypothèse nulle est la non stationnarité du processus.  
         \begin{verbatim}
         > adf.test(x = S1,alternative = ``s'')
 
@@ -197,36 +197,36 @@
         alternative hypothesis: stationary
         \end{verbatim}
 
-        Le test a donc une p-value non negligeable donc on ne peut pas rejeter
-        l'hypothese nulle de non stationnarite 
+        Le test a donc une p-value non négligeable donc on ne peut pas rejeter
+        l'hypothèse nulle de non stationnarité 
         
-        \paragraph{Fonction d'auto-corrélation} tracons maintenant la fonction
-        d'auto-correlation absolue et partielle :
+        \paragraph{Fonction d'autocorrélation} traçons maintenant la fonction
+        d'autocorrélation absolue et partielle :
         \begin{figure}[H]
             \centering 
             \label{fig:ac} 
             \includegraphics[width=4in,heigth=4in,angle=270]{ac} 
-            \caption{\it Correlogramme } 
+            \caption{\it Corrélogramme } 
         \end{figure} 
 
-        \paragraph{}l'ACF est decroissante, donc la tendance de ce processus
-        pourrai bien etre une tendance polynomiale. 
+        \paragraph{}l'ACF est décroissante, donc la tendance de ce processus
+        pourrai bien être une tendance polynomiale. 
         
 
-    \subsection{Elimination de la tendance}
-        \paragraph{} Les tendances polynomiale disparaissent apres un nombre de
-        differenciation au minimum egale au degre polynomiale de cette tendance.
-        Nous allons commencer par une differenciation d'ordre 1. Notons $Y_t=\Delta X_t$
-        tracons l'allure de cette difference :
+    \subsection{Élimination de la tendance}
+        \paragraph{} Les tendances polynomiale disparaissent après un nombre de
+        différenciation au minimum égale au degré polynomiale de cette tendance.
+        Nous allons commencer par une différenciation d'ordre 1. Notons $Y_t=\Delta X_t$
+        traçons l'allure de cette différence :
 
         \begin{figure}[H]
             \centering 
             \label{fig:chronoD1} 
             \includegraphics[width=3in,heigth=3in,angle=270]{chronoD1} 
-            \caption{\it Allure de la difference du proceccus $X_t$ } 
+            \caption{\it Allure de la différence du processus $X_t$ } 
         \end{figure} 
 
-        On remarque de visu que le processus est centre. Cela peut etre confirme par
+        On remarque de visu que le processus est centre. Cela peut être confirme par
         le test de Student :
         \begin{verbatim}
         > t.test(D1,mu = 0)
@@ -243,9 +243,9 @@
                0.002926711 
 
         \end{verbatim}
-        On ne peut pas rejeter donc l'hypothèse nulle qui est que le procussus
+        On ne peut pas rejeter donc l'hypothèse nulle qui est que le processus
         est centre.
-        \paragraph{Test d'independance}
+        \paragraph{Test d'indépendance}
 
         \begin{verbatim}
         > Box.test(x = D1)
@@ -264,9 +264,9 @@
 
         \end{verbatim}
         
-        La p-value du test etant tres faible on peut rejeter l'hypothèse nulle
-        d'indendance : le processus depend toujours du passe.
-        \paragraph{Stationnarite}
+        La p-value du test étant tres faible on peut rejeter l'hypothèse nulle
+        d'intendance : le processus dépend toujours du passe.
+        \paragraph{Stationnarité}
     
         En appliquant le test de Dickey-Fuller :
         \begin{verbatim}
@@ -282,26 +282,26 @@
         In adf.test(x = D1, alternative = ``s'') :
         p-value smaller than printed p-value
         \end{verbatim}
-        Le test renvoie une p-value tres faible donc on peut rejeter l'hypothèse
+        Le test renvoie une p-value très faible donc on peut rejeter l'hypothèse
         nulle : le processus $Y_t$ est stationnaire.
 
-        À present on peut envisager une modelisation ARMA pour le procussus
+        À présent on peut envisager une modélisation ARMA pour le processus
         $Y_t$.
-    \subsection{Modelisation ARMA}        
+    \subsection{Modélisation ARMA}        
         
-        Examinons d'abord l'allure de l'auto-correlation de ce processus:
+        Examinons d'abord l'allure de d'autocorrélation de ce processus:
         \begin{figure}[H]
             \centering 
             \label{fig:D1ac} 
             \includegraphics[width=3in,heigth=3in,angle=270]{D1ac} 
-            \caption{\it auto-correlation totale et partielle de $Y_t$ } 
+            \caption{\it autocorrélation totale et partielle de $Y_t$ } 
         \end{figure} 
 
-        on constate tout d'abord que l'ACF et la PACF s'annulent à partir du
-        deuxieme
-        retard. Donc cela nous suggère immediatement trois modeles ARMA qui peuvent
-        etre candidats : ARMA(0,1), ARMA(1,0) et ARMA(1,1)
-        Comparons alors ces trois modeles en utilisant le critere AIC :
+        On constate tout d'abord que l'ACF et la PACF s'annulent à partir du
+        deuxième
+        retard. Donc cela nous suggère immédiatement trois modèle ARMA qui peuvent
+        être candidats : ARMA(0,1), ARMA(1,0) et ARMA(1,1)
+        Comparons alors ces trois modèles en utilisant le critère AIC :
 
         \begin{verbatim}
         > arima(s1,c(0,1,1))
@@ -340,8 +340,8 @@
         AIC=-1686.94   AICc=-1686.9   BIC=-1673.56
         \end{verbatim}
 
-        La modelisation est clairement meilleure au niveau de la minimisation du
-        critere AIC et BIC. Cela aussi est confirme par la fonction
+        La modélisation est clairement meilleure au niveau de la minimisation du
+        critère AIC et BIC. Cela aussi est confirme par la fonction
         \verb+auto.arima()+ :
         \begin{verbatim}
         > auto.arima(x = s1,d = 1,max.p = 5,max.q = 5,start.p = 0,start.q =
@@ -374,30 +374,30 @@
         likelihood=845.29
         AIC=-1686.58   AICc=-1686.56   BIC=-1677.67
         \end{verbatim}
-        Pour finir testons la precision du coefficient ar1 par un test
+        Pour finir testons la précision du coefficient ar1 par un test
         t-statistic :
         \begin{verbatim}
                     ar1
                     t.stat 3.317992
                     p.val  0.000907
         \end{verbatim}
-        la p-value est tres faible donc le coefficient est precis.
-        \paragraph{Residu}
+        la p-value est très faible donc le coefficient est précis.
+        \paragraph{Résidu}
             \subparagraph{}
             \begin{verbatim}
             > t.test(M0$residuals)$p.value
             [1] 0.3169825
             \end{verbatim}
-            la p-value etant tres grande on peut dire que le residu est
+            la p-value étant très grande on peut dire que le résidu est
            centre. 
-            \subparagraph{Indepandance}
+            \subparagraph{Indépendance}
                 \begin{verbatim}
                 > Box.test(M0$residuals)$p.value
                 [1] 0.8762552
                 \end{verbatim}
-                La p-value du test de Portemanteau etant tres grande on peux dire
-                que le residus est independant.
-            \subparagraph{Stationnarite}
+                La p-value du test de Portemanteau étant très grande on peux dire
+                que le résidus est indépendant.
+            \subparagraph{Stationnarité}
                 \begin{verbatim}
                     > adf.test(x = M0$residuals,alternative = ``s'')$p.value
                     [1] 0.01
@@ -405,12 +405,12 @@
                     In adf.test(x = M0$residuals, alternative = ``s") :
                       p-value smaller than printed p-value
                 \end{verbatim}
-                La p-value du test de non  stationnarite est tres faible donc on
-                peut rejeter l'hypothese de non stationnarite : Le residu est
+                La p-value du test de non  stationnarité est très faible donc on
+                peut rejeter l'hypothèse de non stationnarité : Le résidu est
                 bien stationnaire
 
-\section{Etude du cours d'action de la societe AIG}
-    \subsection{Exploration des donnees}
+\section{Étude du cours d'action de la société AIG}
+    \subsection{Exploration des données}
         \begin{verbatim}    
         > describe(aig)
         aig 
@@ -457,7 +457,7 @@
             d'action de AIG } 
         \end{figure} 
 
-        \subsection{Modelisation}
+        % \subsection{Modelisation}
             % \subsubsection{Ordre de differenciation}
             % % \paragraph{Remarque} Le premier ordre de differenciation corresponds au rendement de
             %     l'action AIG. En effet :
@@ -613,18 +613,18 @@
           \caption{\it Corrélogramme du résidu de la régression } 
             \end{figure} 
              
-            \paragraph{} on constate que le residu n'est pas stationnaire.
+            \paragraph{} on constate que le résidu n'est pas stationnaire.
 
-            \paragraph{Differenciation du residu} procedons a la differenciation
+            \paragraph{Différenciation du résidu} procédons a la différenciation
             d'ordre 3 :
             \begin{figure}[H]
                 \centering 
                 \label{fig:depd3reg} 
                 \includegraphics[width=3in,heigth=3in,angle=270]{depd3reg} 
-                \caption{\it Correlogramme du residu differencie à l'ordre 3 } 
+                \caption{\it Corrélogramme du résidu différencie à l'ordre 3 } 
             \end{figure} 
-            On remarque que l'ACF s'annule à partir du 3 eme retard et que
-            l'PACF decroit exponentiellement donc il s'agit d'un ARIMA(p,3,2).
+            On remarque que l'ACF s'annule à partir du 3 ème retard et que
+            l'PACF décroit exponentiellement donc il s'agit d'un ARIMA(p,3,2).
             Par ailleurs on constate que ARIMA(1,3,2) est celui qui minimise
             AIC.
             
@@ -632,11 +632,11 @@
                 \centering 
                 \label{fig:depd3rr} 
                 \includegraphics[width=3in,heigth=3in,angle=270]{depd3rr} 
-                \caption{\it Correlogramme du residu de notre modelisation ARIMA(1,3,2) } 
+                \caption{\it Corrélogramme du résidu de notre modélisation ARIMA(1,3,2) } 
             \end{figure} 
 
-            le processus ne montre aucune autocorrelation non nulle, ceci appuis
-            l'hypothese de stationnarite :
+            Le processus ne montre aucune autocorrélation non nulle, ceci appuis
+            l'hypothèse de stationnarité :
             \begin{verbatim}
             > summary(ur.kpss(rr))
 
@@ -652,9 +652,9 @@
                             10pct  5pct 2.5pct  1pct
             critical values 0.347 0.463  0.574 0.739
             \end{verbatim}
-            Le test de kpss montre aussi que le processus est stationnaire car
-            la valeur du test est inferieur aux valeurs critiques. D'autre part
-            le residu est centre :
+            Le test de KPSS montre aussi que le processus est stationnaire car
+            la valeur du test est inférieur aux valeurs critiques. D'autre part
+            le résidu est centre :
             \begin{verbatim}
             > t.test(rr)
 
@@ -669,24 +669,30 @@
                 mean of x 
                 0.002492546 
             \end{verbatim}
-            Le test de student confirme bien que le residu est centre et
-            gaussien. En effet le graphe de probabilite de la loi normale est
-            parfaitement lineaire :
+            Le test de Student confirme bien que le résidu est centre et
+            gaussien. En effet le graphe de probabilité de la loi normale est
+            parfaitement linéaire :
             \begin{figure}[H]
                 \centering 
                 \label{fig:qqrr} 
                 \includegraphics[width=3in,heigth=3in,angle=270]{qqrr} 
-                \caption{\it QQ-plot du residu pour la loi normale } 
+                \caption{\it QQ-plot du résidu pour la loi normale } 
             \end{figure} 
 
-            \paragraph{Conclusion} Notre modelisation du residu en arima est
-            verifiee, en notant le residu par $(r_t)$ :
-            \[
+            \paragraph{Indépendance}
+            Le processus est indépendant car il est gaussion de fonction
+            d'autocorrélation nulle.
+            \paragraph{Conclusion} Notre modélisation du résidu en arima est
+            vérifiée, en notant le résidu par $(r_t)$ :
+            \begin{equation}
                 Y_t &=& -0.04 X_t + 28.74 + r_t \\
                 Z_t &=& \Delta^{3}r_t \\
                 Z_t + a_1 Z_{t-1} &=& \epsilon_t + b_1 \epsilon_{t-1} + b_2
                 \epsilon_{t-2}\\
-                \epsilon_t \sim \mathcal{N}(0,2.75)
-            \]
-            Ainsi les series $X_t,Y_t$ sont cointegrer car $Z_t$ est un
-            processus integre d'ordre 3.
+                \epsilon_t \sim \mathcal{N}(0,2.75) &=& 
+     
+                \label{eq:1}
+            \end{equation}
+                       
+            Ainsi les séries $X_t,Y_t$ sont cointegrer car $Z_t$ est un
+            processus intégré d'ordre 3.
