@@ -39,12 +39,29 @@ source("data.R")
     library(data.table)
     data$annee = year(data$cot)
     data2 <- as.data.table(data)
-    sup <- data2[annee %between% c(2005, 2010)]
+    sup <- data2[annee %between% c(2008, 2010)]
     sup$label <- as.factor(paste("Spreads", sup$annee, sep = ""))
-    sup$month <- seq(as.Date("2005-08-01"), by = "month", length = 12)
+    sup$month <- seq(as.Date("2008-08-01"), by = "month", length = 12)
+    sup$month <- month(data$cot)
     ggplot(data = sup, aes(x = month, y = S1, color = label)) + geom_line(aes(y = S1)) +  geom_point(aes(y = S1)) + scale_colour_manual(name = "Variables", values = c(Spreads2005="purple",Spreads2006="pink",Spreads2007 = "blue", Spreads2008 = "red",Spreads2009 ="green",Spreads2010="yellow")) + scale_x_date(labels = date_format("%B"), breaks = date_breaks("month")) + theme(legend.position ="bottom")
     # plot en coordonnees polaires
-    ggplot(data = sup, aes(x = month, y = S1, color = label)) + geom_line(aes(y = S1)) +   geom_point(aes(y = S1)) + coord_polar() + scale_x_date(labels = date_format("%B"), breaks = date_breaks("month")) 
+    ggplot(data = sup, aes(x = month, y = S1, color = label)) +  geom_line(aes(y = S1)) + coord_polar() 
+# +  
+# + scale_x_date(labels = date_format("%B"), breaks = date_breaks("month")) 
+
+data <- as.data.table(data)
+data$cot <- as.Date(data$cot)
+sup <- data[annee %between% c(2008, 2010)]
+
+sup$label <- as.factor(paste("S1 ", sup$annee, sep = ""))
+
+sup$month <- as.Date(seq(as.Date("2008-01-01"), by = "month", length = 12))
+postscript("/Users/mohammad/Documents/MyProject/TimeSeries/doc/latex/polarAn.eps")
+ggplot(data = sup, aes(x = month, y = S1, color = label)) + geom_line(aes(y = S1)) + geom_point(aes(y = S1)) + coord_polar() + theme(legend.position = "bottom")
+dev.off()
+#   
+# + scale_colour_manual(name = "Variables", values = c(Sales2000 = "blue", Sales2001 = "red", Sales2002 = "green"))
+# +  scale_x_date(labels = date_format("%B"), breaks = date_breaks("month"))
 
 # Stationnarite -----------------------------------------------------------
 
@@ -170,7 +187,7 @@ plot(forecast(M2,h=10))
 
 
 # Prediction a h ----------------------------------------------------------
-par(mfcol = c(1,1))
+    par(mfcol = c(1,1))
     D1 <- diff(s1)
     n <- 4
     T <- length(s1)
@@ -184,8 +201,7 @@ par(mfcol = c(1,1))
     MyPred <- P.s1[2:(n+1)]
   plot(Cot[(T - 4 * n):T], s1[(T - 4 * n):T - 1], main = "prevision ARIMA(1,1,0)", t = "l", col = "blue", xlab = "temps", ylab = "s1")
   lines(Cot[(T - n):T], c(s1[T - n - 1], MyPred),col = "red")
-
-
+  prev <- forecast(M0,h = n,level = c(80,95))
 
 # Modelisation ARCH -------------------------------------------------------
 
